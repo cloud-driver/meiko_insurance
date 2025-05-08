@@ -105,5 +105,10 @@ def edit_ex(classroom, names):
 
     return worst_msg
 
+def get_email(classroom):
+    with open(r"json/emails.json", "r", encoding="utf-8") as f:
+        emails = json.load(f)
+    return emails[classroom]
+
 if __name__ == "__main__":
     print("這裡是自建函式庫，你點錯了，請使用 app.py 發送資料測試")

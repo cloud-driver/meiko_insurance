@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, render_template_string
 import os
 import time
-from codes import send_email, copy_ex, edit_ex
+from codes import send_email, copy_ex, edit_ex, get_email
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
@@ -81,8 +81,6 @@ def home():
                 <label for="classroom">選擇教室：</label>
                 <select name="classroom" required>
                     <option value="萬芳">萬芳</option>
-                    <option value="龍門">龍門</option>
-                    <option value="多一間廁所">多一間廁所</option>
                 </select>
 
                 <div id="teacherFields">
@@ -170,14 +168,24 @@ def send_email_async():
     t = time.time()
     tt = time.localtime(t)
 
+    for i in range(len(teachers)):
+        teachers[i] = teachers[i].strip()
+
     copy_ex(classroom)
     send_email(
         f"{classroom}教室 {time.strftime('%Y%m%d', tt)} 加退保excel",
         classroom,
         os.listdir(classroom),
         "\n".join(edit_ex(classroom, teachers)),
-        "justin520cheng@gmail.com"
+        get_email(classroom)
     )
+    """send_email(
+        f"{classroom}教室 {time.strftime('%Y%m%d', tt)} 加退保excel",
+        classroom,
+        os.listdir(classroom),
+        "\n".join(edit_ex(classroom, teachers)),
+        "justin520cheng@gmail.com"
+    )"""
     return jsonify({"status": "success"})
 
 if __name__ == "__main__":
